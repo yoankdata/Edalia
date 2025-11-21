@@ -42,11 +42,12 @@ export default function Home() {
             <div className="relative h-80 md:h-full w-full rounded-2xl overflow-hidden shadow-xl min-h-[320px]">
               {heroImage && (
                 <Image
-                  src={'/student-studying.svg'}
+                  src={heroImage.imageUrl}
                   alt={heroImage.description}
                   fill
-                  style={{ objectFit: 'contain', objectPosition: 'center' }}
+                  style={{ objectFit: 'cover', objectPosition: 'center' }}
                   priority
+                  data-ai-hint={heroImage.imageHint}
                 />
               )}
             </div>
@@ -206,7 +207,7 @@ export default function Home() {
                 <CardContent className="p-8 space-y-4">
                   <div className="flex items-center gap-4">
                     <Avatar>
-                      <AvatarImage src="https://images.unsplash.com/photo-1599427323565-37a8585686ce?w=400&q=80" data-ai-hint="african mother portrait" />
+                      <AvatarImage src="https://images.unsplash.com/photo-1542296332-9a5726243813?w=400&q=80" data-ai-hint="african mother portrait" />
                       <AvatarFallback>MK</AvatarFallback>
                     </Avatar>
                     <div>
@@ -224,7 +225,7 @@ export default function Home() {
                 <CardContent className="p-8 space-y-4">
                   <div className="flex items-center gap-4">
                     <Avatar>
-                      <AvatarImage src="https://images.unsplash.com/photo-1620910418312-3c7674a2f8d3?w=400&q=80" data-ai-hint="african father portrait" />
+                      <AvatarImage src="https://images.unsplash.com/photo-1624561172888-ac93c690e10c?w=400&q=80" data-ai-hint="african father portrait" />
                       <AvatarFallback>MD</AvatarFallback>
                     </Avatar>
                     <div>
