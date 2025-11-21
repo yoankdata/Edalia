@@ -1,3 +1,58 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "hero-image",
+      "description": "A vibrant classroom with a teacher and students.",
+      "imageUrl": "https://images.unsplash.com/photo-1577896851231-70ef18881754?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxjbGFzc3Jvb20lMjBzdHVkZW50c3xlbnwwfHx8fDE3NjM2NDk3MjZ8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "classroom students"
+    },
+    {
+      "id": "teacher-1",
+      "description": "Portrait of a friendly female teacher.",
+      "imageUrl": "https://images.unsplash.com/photo-1643773664163-1b7c307ae888?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8dGVhY2hlciUyMHBvcnRyYWl0fGVufDB8fHx8MTc2MzcxNzkzN3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "teacher portrait"
+    },
+    {
+      "id": "teacher-2",
+      "description": "Portrait of a smiling male teacher.",
+      "imageUrl": "https://images.unsplash.com/photo-1515994034738-1f437c226687?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHx0ZWFjaGVyJTIwcG9ydHJhaXR8ZW58MHx8fHwxNzYzNzE3OTM3fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "teacher portrait"
+    },
+    {
+      "id": "teacher-3",
+      "description": "Portrait of a male teacher in a library.",
+      "imageUrl": "https://images.unsplash.com/photo-1721918316096-dbf92c7a9450?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHx0ZWFjaGVyJTIwbGlicmFyeXxlbnwwfHx8fDE3NjM3MzMzMDh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "teacher library"
+    },
+    {
+      "id": "teacher-4",
+      "description": "Portrait of a female science teacher.",
+      "imageUrl": "https://images.unsplash.com/photo-1565792894736-eeced66760d7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxzY2llbmNlJTIwdGVhY2hlcnxlbnwwfHx8fDE3NjM3MzMzMDh8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "science teacher"
+    },
+    {
+      "id": "teacher-5",
+      "description": "Portrait of a male music teacher.",
+      "imageUrl": "https://images.unsplash.com/photo-1593697821252-0c9137d9fc45?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxtdXNpYyUyMHRlYWNoZXJ8ZW58MHx8fHwxNzYzNzMzMzA4fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "music teacher"
+    },
+    {
+      "id": "teacher-6",
+      "description": "Portrait of a female art teacher.",
+      "imageUrl": "https://images.unsplash.com/photo-1722643882339-7a6c9cb080db?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxhcnQlMjB0ZWFjaGVyfGVufDB8fHx8MTc2MzczMzMwOHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "art teacher"
+    },
+    {
+      "id": "about-us",
+      "description": "Diverse group of students learning together.",
+      "imageUrl": "https://images.unsplash.com/photo-1565598621680-94ac0c22b148?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxzdHVkZW50cyUyMGxlYXJuaW5nfGVufDB8fHx8MTc2MzcxNzQxOHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "students learning"
+    },
+    {
+      "id": "become-teacher",
+      "description": "A teacher mentoring a student.",
+      "imageUrl": "https://images.unsplash.com/photo-1758685733987-54952cd1c8c6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHx0ZWFjaGVyJTIwbWVudG9yaW5nfGVufDB8fHx8MTc2MzczMzMwOHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "teacher mentoring"
+    }
+  ]
 }
