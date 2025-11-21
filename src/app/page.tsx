@@ -236,7 +236,7 @@ export default function Home() {
                   <div className="flex text-accent">
                     {[...Array(5)].map((_, i) => <Star key={i} className="w-5 h-5 fill-current" />)}
                   </div>
-                   <p className="text-muted-foreground italic">"Je cherchais un prof de guitare pour ma fille. La plateforme est simple et les profs sont sérieux. Je recommande Edalia sans hésiter."</p>
+                   <p className="text-muted-foreground italic">"Je cherchais un prof de français pour ma fille. La plateforme est simple et les profs sont sérieux. Je recommande Edalia sans hésiter."</p>
                 </CardContent>
               </Card>
             </div>
