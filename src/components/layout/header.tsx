@@ -45,7 +45,7 @@ export function Header() {
           })}
         </nav>
         <div className="flex items-center gap-4">
-            <Button className="hidden md:inline-flex bg-accent text-accent-foreground hover:bg-accent/90" asChild>
+            <Button className="hidden md:inline-flex" asChild>
               <Link href="/teachers">Voir les profs</Link>
             </Button>
             <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
