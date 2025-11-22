@@ -1,125 +1,220 @@
+import { supabase } from '@/lib/supabase';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
-import { Star, MapPin, Book, Briefcase, GraduationCap, Phone, Verified } from 'lucide-react';
-import { teachers, findImage, Teacher } from '@/lib/placeholder-data';
+import { MapPin, Phone, Verified } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
+import { Card, CardContent } from '@/components/ui/card';
 
-export async function generateStaticParams() {
-  return teachers.map((teacher) => ({
-    id: teacher.id,
-  }));
-}
+type ProfesseurRow = {
+  id: string;
+  nom_complet: string;
+  matiere: string;
+  niveau: string;
+  tarif_horaire: number;
+  commune: string;
+  biographie: string | null;
+  photo_url: string | null;
+  numero_whatsapp: string;
+  verifie: boolean;
+  cree_le: string;
+};
 
-function getTeacher(id: string): Teacher | undefined {
-  return teachers.find((teacher) => teacher.id === id);
-}
+type PageProps = {
+  params: {
+    id: string;
+  };
+};
 
-export default function TeacherProfilePage({ params }: { params: { id: string } }) {
-  const teacher = getTeacher(params.id);
+export default async function TeacherProfilePage({ params }: PageProps) {
+  const { id } = params;
 
-  if (!teacher) {
+  const { data, error } = await supabase
+    .from('professeurs')
+    .select('*')
+    .eq('id', id)
+    .maybeSingle<ProfesseurRow>();
+
+  if (error) {
+    console.error('Erreur Supabase (professeur) :', error.message);
     notFound();
   }
 
-  const image = findImage(teacher.avatarImageId);
-  const whatsappLink = `https://wa.me/${teacher.whatsappNumber}`;
+  if (!data) {
+    notFound();
+  }
+
+  const prof = data;
+
+  // --- Fallback photo ---
+  const placeholderPhoto = '/images/teachers/placeholder-teacher.jpg';
+  const photoUrl =
+    prof.photo_url && prof.photo_url.trim() !== ''
+      ? prof.photo_url
+      : placeholderPhoto;
+
+  const whatsappLink = `https://wa.me/${prof.numero_whatsapp}`;
 
   return (
-    <div className="bg-background min-h-screen">
-      <div className="container mx-auto px-4 py-16 md:py-24">
-        <div className="grid md:grid-cols-3 gap-8 lg:gap-12">
-          {/* Left Column (Sticky) */}
-          <aside className="md:col-span-1 md:sticky top-24 self-start">
-            <Card className="overflow-hidden">
-              <CardHeader className="p-0">
-                <div className="relative aspect-square w-full">
-                  {image && (
-                    <Image
-                      src={image.imageUrl}
-                      alt={`Portrait de ${teacher.name}`}
-                      fill
-                      style={{ objectFit: 'cover' }}
-                      priority
-                      data-ai-hint={image.imageHint}
-                    />
-                  )}
-                   <div className="absolute top-2 right-2">
-                        <Badge className="bg-accent/80 backdrop-blur-sm text-accent-foreground border-accent">
-                            <Verified className="w-4 h-4 mr-1.5" />
-                            Vérifié
-                        </Badge>
-                    </div>
-                </div>
-              </CardHeader>
-              <CardContent className="p-6 text-center space-y-4">
-                <h1 className="font-headline text-3xl font-bold text-primary">{teacher.name}</h1>
-                <div className="flex justify-center items-center gap-2 text-sm text-muted-foreground">
-                    <MapPin className="w-4 h-4" />
-                    <span>{teacher.location}</span>
-                </div>
-                <div className="flex justify-center items-center gap-2 text-accent">
-                    <Star className="w-5 h-5 fill-current" />
-                    <span className="font-bold text-lg">{teacher.rating.toFixed(1)}</span>
-                    <span className="text-muted-foreground text-sm">({teacher.reviews} avis)</span>
-                </div>
-                <Separator />
-                <div className="text-left space-y-1">
-                    <p className="text-muted-foreground">Tarif</p>
-                    <p><span className="font-bold text-2xl text-primary">{teacher.rate.toLocaleString('fr-CI')} FCFA</span> / heure</p>
-                </div>
-                 <Button size="lg" className="w-full" asChild>
-                  <a href={whatsappLink} target="_blank" rel="noopener noreferrer">
-                    <Phone className="mr-2 h-5 w-5" /> Contacter sur WhatsApp
+    <div className="relative">
+      {/* Barre CTA sticky mobile */}
+      <div className="fixed bottom-0 left-0 right-0 z-20 bg-background/95 backdrop-blur border-t px-4 py-3 flex items-center justify-between md:hidden">
+        <div className="text-sm">
+          <p className="font-semibold">{prof.nom_complet}</p>
+          <p className="text-xs text-muted-foreground">
+            {prof.matiere} • {prof.niveau}
+          </p>
+        </div>
+        <Button asChild size="sm">
+          <a href={whatsappLink} target="_blank" rel="noopener noreferrer">
+            <Phone className="mr-2 h-4 w-4" /> WhatsApp
+          </a>
+        </Button>
+      </div>
+
+      <div className="container py-10 md:py-14 space-y-6 md:space-y-10">
+        <a
+          href="/teachers"
+          className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground hover:underline"
+        >
+          ← Retour à la liste des professeurs
+        </a>
+
+        {/* Bandeau principal */}
+        <section className="rounded-2xl border bg-card px-5 py-6 md:px-8 md:py-7 shadow-sm">
+          <div className="grid gap-6 md:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] md:items-center">
+            <div className="space-y-2">
+              <div className="flex items-center gap-3 flex-wrap">
+                <h1 className="text-2xl md:text-3xl font-headline font-semibold">
+                  {prof.nom_complet}
+                </h1>
+
+                {prof.verifie && (
+                  <Badge className="bg-accent text-accent-foreground border-accent">
+                    <Verified className="w-4 h-4 mr-1.5" />
+                    Professeur vérifié
+                  </Badge>
+                )}
+              </div>
+
+              <p className="text-muted-foreground">
+                {prof.matiere} • {prof.niveau}
+              </p>
+
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <MapPin className="w-4 h-4" />
+                <span>{prof.commune}, Abidjan</span>
+              </div>
+            </div>
+
+            <div className="flex md:justify-end md:text-right items-center gap-4 md:gap-6">
+              <div className="space-y-1">
+                <p className="text-xs uppercase tracking-wide text-muted-foreground">
+                  Tarif horaire
+                </p>
+                <p className="text-xl md:text-2xl font-headline font-semibold">
+                  {prof.tarif_horaire.toLocaleString('fr-FR')} FCFA
+                  <span className="text-sm text-muted-foreground ml-1">/ heure</span>
+                </p>
+              </div>
+
+              <div className="hidden md:block">
+                <Button asChild size="lg">
+                  <a
+                    href={whatsappLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Phone className="mr-2 h-4 w-4" /> Contacter sur WhatsApp
                   </a>
                 </Button>
-                <p className="text-xs text-muted-foreground pt-2">Professeur vérifié par Edalia</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Corps */}
+        <section className="grid gap-8 md:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)] items-start">
+          {/* Photo + Bio */}
+          <div className="space-y-6">
+            <Card className="overflow-hidden shadow-sm">
+              <CardContent className="p-0">
+                <div className="relative w-full aspect-[4/5] bg-muted">
+                  <Image
+                    src={photoUrl}
+                    alt={`Portrait de ${prof.nom_complet}`}
+                    fill
+                    style={{ objectFit: 'cover' }}
+                  />
+                </div>
               </CardContent>
             </Card>
-          </aside>
 
-          {/* Right Column */}
-          <main className="md:col-span-2 space-y-10">
-            <section>
-              <h2 className="font-headline text-2xl font-bold text-primary mb-4">À propos de moi</h2>
-              <p className="text-lg text-muted-foreground leading-relaxed">{teacher.bio}</p>
-            </section>
-            
-            <section>
-                <Card>
-                    <CardContent className="p-6 grid sm:grid-cols-2 gap-6">
-                        <div className="flex items-start gap-4">
-                            <Briefcase className="w-8 h-8 text-accent mt-1 flex-shrink-0" />
-                            <div>
-                                <h3 className="font-semibold text-lg">Expérience</h3>
-                                <p className="text-muted-foreground">{teacher.experience}</p>
-                            </div>
-                        </div>
-                         <div className="flex items-start gap-4">
-                            <GraduationCap className="w-8 h-8 text-accent mt-1 flex-shrink-0" />
-                            <div>
-                                <h3 className="font-semibold text-lg">Diplômes</h3>
-                                <ul className="list-disc list-inside text-muted-foreground">
-                                    {teacher.qualifications.map(q => <li key={q}>{q}</li>)}
-                                </ul>
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
-            </section>
+            <Card className="shadow-sm">
+              <CardContent className="p-6 md:p-7 space-y-3 md:space-y-4">
+                <h2 className="text-lg md:text-xl font-headline font-semibold">
+                  À propos du professeur
+                </h2>
+                <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
+                  {prof.biographie || "Ce professeur n'a pas encore complété sa biographie."}
+                </p>
+              </CardContent>
+            </Card>
+          </div>
 
-            <section>
-              <h2 className="font-headline text-2xl font-bold text-primary mb-4">Matières enseignées</h2>
-              <div className="flex flex-wrap gap-3">
-                {teacher.subjects.map((subject) => (
-                  <Badge key={subject} className="text-base px-4 py-2" variant="secondary">{subject}</Badge>
-                ))}
-              </div>
-            </section>
-          </main>
-        </div>
+          {/* Infos pratiques */}
+          <div className="space-y-6">
+            <Card className="shadow-sm">
+              <CardContent className="p-5 md:p-6 space-y-4">
+                <h3 className="font-headline font-semibold text-base md:text-lg">
+                  Informations pratiques
+                </h3>
+
+                <div className="space-y-2 text-sm text-muted-foreground">
+                  <p>
+                    <span className="font-semibold text-foreground">Matière :</span> {prof.matiere}
+                  </p>
+                  <p>
+                    <span className="font-semibold text-foreground">Niveau :</span> {prof.niveau}
+                  </p>
+                  <p>
+                    <span className="font-semibold text-foreground">Commune :</span> {prof.commune}
+                  </p>
+                  <p>
+                    <span className="font-semibold text-foreground">Tarif :</span> {prof.tarif_horaire.toLocaleString('fr-FR')} FCFA / heure
+                  </p>
+                </div>
+
+                <div className="pt-2 hidden md:block">
+                  <Button asChild variant="outline" className="w-full">
+                    <a
+                      href={whatsappLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <Phone className="mr-2 h-4 w-4" /> Envoyer un message WhatsApp
+                    </a>
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="border-dashed shadow-none">
+              <CardContent className="p-4 md:p-5 text-xs md:text-sm text-muted-foreground space-y-2">
+                <p className="font-semibold text-foreground">Conseil pour le premier contact :</p>
+                <p>
+                  Présentez brièvement le niveau de votre enfant, ses difficultés
+                  et vos attentes. Vous pouvez demander :
+                </p>
+                <ul className="list-disc list-inside space-y-1">
+                  <li>comment le professeur organise un premier cours ;</li>
+                  <li>combien de séances il recommande par semaine ;</li>
+                  <li>comment il suit la progression de l'élève.</li>
+                </ul>
+              </CardContent>
+            </Card>
+          </div>
+        </section>
       </div>
     </div>
   );

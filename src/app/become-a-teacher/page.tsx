@@ -3,6 +3,8 @@ import { Button } from '@/components/ui/button';
 import { findImage } from '@/lib/placeholder-data';
 import { CheckCircle, Zap, Users, BadgePercent } from 'lucide-react';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import Link from 'next/link';
+
 
 const pageImage = findImage('become-teacher');
 
@@ -67,9 +69,11 @@ export default function BecomeATeacherPage() {
                 <p className="font-headline text-4xl font-bold text-primary my-2">5 000 FCFA</p>
                 <p className="text-sm text-muted-foreground">Aucun engagement, aucune commission.</p>
             </div>
-            <Button size="lg" type="submit" className="w-full">
+            <Button asChild size="lg" className="w-full">
+              <Link href="/become-a-teacher/form">
               Créer mon profil enseignant
-            </Button>
+              </Link>
+            </Button> 
             <p className="text-xs text-muted-foreground mt-3">Le processus d'inscription et de vérification prend moins de 24h.</p>
           </div>
         </div>

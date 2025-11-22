@@ -2,10 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ================================================================
+   MODE CLAIR
+   ================================================================ */
 @layer base {
   :root {
-    --background: 220 20% 97%; /* #F3F0E7 - Ivoire / Neutre */
-    --foreground: 210 5% 18%; /* #2D2D2D - Gris foncé */
+    /* COULEURS DE BASE */
+    --background: 0 0% 100%;           /* Blanc pur */
+    --foreground: 210 5% 18%;          /* Gris foncé #2D2D2D */
 
     --card: 0 0% 100%;
     --card-foreground: 210 5% 18%;
@@ -13,66 +17,166 @@
     --popover: 0 0% 100%;
     --popover-foreground: 210 5% 18%;
 
-    --primary: 153 39% 21%; /* #234D3C - Vert profond */
+    /* COULEURS PRINCIPALES */
+    --primary: 153 39% 21%;            /* Vert profond */
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 147 23% 92%; /* #E5EFE9 - Vert clair */
+    --secondary: 147 23% 88%;          /* Vert clair modernisé */
     --secondary-foreground: 153 39% 21%;
 
     --muted: 0 0% 95%;
-    --muted-foreground: 0 0% 42%; /* #6A6A6A - Gris neutre */
+    --muted-foreground: 0 0% 42%;      /* Gris neutre */
 
-    --accent: 39 59% 58%; /* #D4A857 - Ocre doré */
+    --accent: 39 59% 58%;              /* Ocre doré */
     --accent-foreground: 210 5% 18%;
 
-    --destructive: 0 84.2% 60.2%;
+    --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
 
+    /* BORDURES & INPUTS */
     --border: 153 10% 85%;
-    --input: 153 10% 90%;
+    --input: 153 10% 92%;
     --ring: 153 39% 21%;
 
+    /* CHART COLORS */
     --chart-1: 153 39% 21%;
     --chart-2: 39 59% 58%;
     --chart-3: 153 20% 50%;
     --chart-4: 39 59% 70%;
     --chart-5: 153 39% 35%;
 
-    --radius: 0.75rem; /* 12px */
+    /* RADIUS + SHADOW */
+    --radius: 0.75rem;
+    --shadow-subtle: 0 4px 6px -1px rgba(0,0,0,0.05),
+                     0 2px 4px -2px rgba(0,0,0,0.03);
   }
 
+  /* ================================================================
+     MODE SOMBRE
+     ================================================================ */
   .dark {
-    /* Dark mode colors can be defined here if needed */
     --background: 210 5% 10%;
     --foreground: 220 10% 95%;
+
     --card: 210 5% 12%;
     --card-foreground: 220 10% 95%;
+
     --popover: 210 5% 12%;
     --popover-foreground: 220 10% 95%;
+
     --primary: 153 40% 75%;
     --primary-foreground: 153 40% 10%;
+
     --secondary: 147 23% 20%;
     --secondary-foreground: 147 23% 90%;
+
     --muted: 220 15% 15%;
     --muted-foreground: 220 10% 60%;
-    --accent: 39 59% 58%;
+
+    --accent: 39 70% 65%;
     --accent-foreground: 39 59% 10%;
-    --destructive: 0 62.8% 30.6%;
+
+    --destructive: 0 62% 30%;
     --destructive-foreground: 0 0% 98%;
+
     --border: 220 15% 20%;
     --input: 220 15% 20%;
     --ring: 153 40% 75%;
+
+    --shadow-subtle: 0 4px 6px -1px rgba(0,0,0,0.20),
+                     0 2px 4px -2px rgba(0,0,0,0.15);
   }
 }
 
+/* ================================================================
+   BASE STYLES
+   ================================================================ */
 @layer base {
   * {
     @apply border-border;
   }
+
   body {
-    @apply bg-background text-muted-foreground;
+    @apply bg-background text-foreground font-sans;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
+
   h1, h2, h3, h4, h5, h6 {
     @apply font-headline text-foreground tracking-tight;
+  }
+
+  /* Paragraphes – base moderne et lisible */
+  p {
+    @apply text-[15px] sm:text-[16px] md:text-[17px] lg:text-[18px]
+           leading-relaxed md:leading-loose text-foreground/80;
+  }
+
+  /* Liens de base */
+  a {
+    @apply text-primary underline-offset-4;
+  }
+
+  a:hover {
+    @apply underline;
+  }
+
+  /* Sélection */
+  ::selection {
+    background-color: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+  }
+
+  /* Micro-interactions et focus accessibles */
+  button,
+  a,
+  input,
+  select,
+  textarea {
+    @apply transition-colors duration-200 ease-in-out;
+  }
+
+  button:focus-visible,
+  a:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+  }
+}
+
+/* ================================================================
+   COMPONENT UTILITIES
+   ================================================================ */
+@layer components {
+  /* Ombre Edalia standard (cards, images, blocs) */
+  .shadow-subtle {
+    box-shadow: var(--shadow-subtle);
+  }
+
+  /* Bloc de texte premium (About, pages éditoriales) */
+  .prose-edalia {
+    @apply max-w-3xl mx-auto text-left space-y-4;
+  }
+
+  .prose-edalia p {
+    @apply text-[16px] md:text-[18px] leading-relaxed md:leading-loose text-foreground/80;
+  }
+
+  .prose-edalia h2 {
+    @apply font-headline text-2xl md:text-3xl font-semibold text-primary mt-6 mb-3;
+  }
+
+  .prose-edalia h3 {
+    @apply font-headline text-xl md:text-2xl font-semibold text-foreground mt-4 mb-2;
+  }
+
+  .prose-edalia ul,
+  .prose-edalia ol {
+    @apply pl-5 space-y-1 text-foreground/80;
+  }
+
+  .prose-edalia li::marker {
+    color: hsl(var(--accent));
   }
 }

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="256" height="256" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <title>Edalia • Badge Vérifié (Anneau Premium)</title>
+  <defs>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F6E27A"/>
+      <stop offset="40%" stop-color="#E4C655"/>
+      <stop offset="100%" stop-color="#D4AF37"/>
+    </linearGradient>
+    <linearGradient id="greenSheen" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#19564F"/>
+      <stop offset="100%" stop-color="#0E3A34"/>
+    </linearGradient>
+  </defs>
+  <!-- Gold ring -->
+  <circle cx="50" cy="50" r="46" fill="none" stroke="url(#gold)" stroke-width="6"/>
+  <!-- Core -->
+  <circle cx="50" cy="50" r="40" fill="url(#greenSheen)"/>
+  <!-- Subtle inner highlight -->
+  <circle cx="50" cy="50" r="32" fill="none" stroke="#FFFFFF" stroke-opacity="0.14" stroke-width="3"/>
+  <!-- Check -->
+  <path d="M33 51 L45 63 L70 38" fill="none" stroke="url(#gold)" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
