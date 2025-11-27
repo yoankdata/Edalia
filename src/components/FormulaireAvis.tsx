@@ -85,7 +85,7 @@ export default function ReviewSubmissionForm({ teacherId }: ReviewSubmissionForm
           <h3 className="text-xl font-semibold">Avis Reçu !</h3>
         </div>
         <p className="mt-2">
-          Merci pour votre retour. Votre avis a été soumis et sera visible sur le profil après une brève vérification manuelle par l'équipe Edalia.
+          Merci pour votre retour. Votre avis a été soumis et sera visible sur le profil après une brève vérification manuelle par l'équipe Kademya.
         </p>
         <button
           onClick={() => setSubmissionStatus('idle')}
@@ -138,7 +138,7 @@ export default function ReviewSubmissionForm({ teacherId }: ReviewSubmissionForm
             placeholder="Ex: 07 00 00 00 00"
             required
           />
-          <p className="text-xs text-gray-500 mt-1">Utilisé uniquement par Edalia pour vérifier que vous avez bien eu cours.</p>
+          <p className="text-xs text-gray-500 mt-1">Utilisé uniquement par Kademya pour vérifier que vous avez bien eu cours.</p>
         </div>
 
         {/* Commentaire */}

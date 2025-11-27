@@ -30,7 +30,7 @@ export default async function FeaturedTeachersSection() {
     .limit(3);
 
   if (error) {
-    console.error('[Edalia] Erreur récupération profs à la une :', error.message);
+    console.error('[Kademya] Erreur récupération profs à la une :', error.message);
     return null;
   }
 
@@ -76,7 +76,7 @@ export default async function FeaturedTeachersSection() {
             Nos professeurs à la une
           </h2>
           <p className="text-muted-foreground max-w-xl mx-auto">
-            Les professeurs les mieux notés par les parents sur Edalia.
+            Les professeurs les mieux notés par les parents sur Kademya.
           </p>
         </div>
 

@@ -12,7 +12,7 @@ export type SendMailParams = {
  * On log juste les infos pour debug.
  */
 export async function sendMail({ to, subject, text }: SendMailParams) {
-  console.log('[Edalia][DEV] sendMail appelé (aucun mail envoyé) :', {
+  console.log('[Kademya][DEV] sendMail appelé (aucun mail envoyé) :', {
     to,
     subject,
     text,

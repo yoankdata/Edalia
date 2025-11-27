@@ -78,7 +78,7 @@ export default {
         sm: 'calc(var(--radius) - 8px)',
       },
 
-      /* Ajout de la shadow Edalia */
+      /* Ajout de la shadow Kademya */
       boxShadow: {
         subtle: 'var(--shadow-subtle)',
       },

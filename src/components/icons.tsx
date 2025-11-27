@@ -7,6 +7,6 @@ export const Logo = (props: SVGProps<HTMLDivElement>) => (
             <path d="M3.33975 14L0 7.99999H12L3.33975 14Z" fill="hsl(var(--primary))"/>
             <path d="M3.33975 14L12 28H0L3.33975 14Z" fill="hsl(var(--primary))" fillOpacity="0.7"/>
         </svg>
-        <span className="font-headline text-3xl font-normal text-primary">Edalia</span>
+        <span className="font-headline text-3xl font-normal text-primary">Kademya</span>
     </div>
 );

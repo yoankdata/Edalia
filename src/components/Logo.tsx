@@ -1,0 +1,51 @@
+// src/components/Logo.tsx
+import Image from 'next/image';
+import Link from 'next/link';
+
+type LogoProps = {
+  variant?: 'header' | 'footer' | 'app';
+};
+
+export function Logo({ variant = 'header' }: LogoProps) {
+  const config =
+    variant === 'footer'
+      ? {
+          src: '/images/kademya-logo-mono-white.png',
+          width: 260,
+          height: 90,
+          // >> GROS LOGO DANS LE FOOTER
+          className: 'h-16 md:h-20 w-auto',
+        }
+      : variant === 'app'
+      ? {
+          src: '/images/kademya-app-icon.png',
+          width: 64,
+          height: 64,
+          className: 'h-12 w-12',
+        }
+      : {
+          // HEADER = logo horizontal
+          src: '/images/kademya-logo-horizontal.png',
+          width: 260,
+          height: 72,
+          // >> PLUS GRAND DANS LE HEADER
+          className: 'h-12 md:h-16 w-auto',
+        };
+
+  return (
+    <Link
+      href="/"
+      aria-label="Accueil Kademya"
+      className="inline-flex items-center"
+    >
+      <Image
+        src={config.src}
+        alt="Kademya"
+        width={config.width}
+        height={config.height}
+        className={config.className}
+        priority={variant === 'header'}
+      />
+    </Link>
+  );
+}

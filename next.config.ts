@@ -1,4 +1,4 @@
-import type {NextConfig} from 'next';
+import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   /* config options here */
@@ -8,25 +8,39 @@ const nextConfig: NextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+
   images: {
     remotePatterns: [
+      // Placehold (déjà présent)
       {
         protocol: 'https',
         hostname: 'placehold.co',
         port: '',
         pathname: '/**',
       },
+
+      // Unsplash (déjà présent)
       {
         protocol: 'https',
         hostname: 'images.unsplash.com',
         port: '',
         pathname: '/**',
       },
+
+      // Picsum (déjà présent)
       {
         protocol: 'https',
         hostname: 'picsum.photos',
         port: '',
         pathname: '/**',
+      },
+
+      // ➕ Ajout : Supabase Storage (obligatoire)
+      {
+        protocol: 'https',
+        hostname: 'zfluhlehcbrcddagydwt.supabase.co',
+        port: '',
+        pathname: '/storage/v1/object/public/**',
       },
     ],
   },

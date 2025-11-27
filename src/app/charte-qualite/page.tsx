@@ -16,9 +16,9 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 
 export const metadata: Metadata = {
-  title: 'Charte de Qualité Edalia | Côte d’Ivoire',
+  title: 'Charte de Qualité Kademya | Côte d’Ivoire',
   description:
-    "Découvrez les engagements d'Edalia et de ses professeurs : professionnalisme, sécurité, pédagogie adaptée au contexte ivoirien et suivi sérieux des élèves.",
+    "Découvrez les engagements d'Kademya et de ses professeurs : professionnalisme, sécurité, pédagogie adaptée au contexte ivoirien et suivi sérieux des élèves.",
 };
 
 export default function Page() {
@@ -29,13 +29,13 @@ export default function Page() {
         <div className="container mx-auto px-4 md:px-6 py-10 md:py-14">
           <div className="max-w-3xl space-y-4">
             <p className="text-sm font-semibold tracking-wide text-primary uppercase">
-              Charte de Qualité Edalia
+              Charte de Qualité Kademya
             </p>
             <h1 className="text-3xl md:text-4xl font-headline font-semibold text-foreground">
-              La promesse Edalia aux parents et aux élèves à Abidjan
+              La promesse Kademya aux parents et aux élèves à Abidjan
             </h1>
             <p className="text-muted-foreground text-sm md:text-base leading-relaxed">
-              Edalia est une plateforme ivoirienne dédiée à la mise en relation entre parents
+              Kademya est une plateforme ivoirienne dédiée à la mise en relation entre parents
               et professeurs sérieux, fiables et vérifiés. Cette charte fixe le niveau
               d’exigence minimum pour tous les enseignants qui apparaissent sur notre
               plateforme.
@@ -65,7 +65,7 @@ export default function Page() {
             <p className="text-sm md:text-base text-muted-foreground leading-relaxed">
               Entre les embouteillages, les contraintes d’horaires, les examens (CEPE, BEPC,
               BAC) et les différences de niveau entre écoles, les parents ont besoin de
-              professeurs fiables, structurés et disponibles. La Charte de Qualité Edalia
+              professeurs fiables, structurés et disponibles. La Charte de Qualité Kademya
               existe pour protéger les familles, valoriser les bons enseignants et écarter
               ceux qui ne respectent pas ce niveau d’exigence.
             </p>
@@ -95,7 +95,7 @@ export default function Page() {
           </div>
           <p className="text-sm md:text-base text-muted-foreground max-w-3xl">
             À Abidjan, la ponctualité est un vrai sujet (embouteillages, transports,
-            contraintes familiales). Chaque professeur Edalia s’engage à respecter les
+            contraintes familiales). Chaque professeur Kademya s’engage à respecter les
             horaires convenus et à prévenir à l’avance en cas d’imprévu.
           </p>
           <ul className="mt-2 space-y-1.5 text-sm md:text-base text-muted-foreground">
@@ -167,7 +167,7 @@ export default function Page() {
             </h3>
           </div>
           <p className="text-sm md:text-base text-muted-foreground max-w-3xl">
-            Edalia ne laisse pas n’importe qui entrer dans la plateforme. Un minimum de
+            Kademya ne laisse pas n’importe qui entrer dans la plateforme. Un minimum de
             vérifications est obligatoire pour protéger les familles.
           </p>
           <ul className="mt-2 space-y-1.5 text-sm md:text-base text-muted-foreground">
@@ -246,7 +246,7 @@ export default function Page() {
             </h3>
           </div>
           <p className="text-sm md:text-base text-muted-foreground max-w-3xl">
-            Pour apparaître dans les résultats Edalia, le professeur doit maintenir son
+            Pour apparaître dans les résultats Kademya, le professeur doit maintenir son
             profil à jour et son abonnement actif.
           </p>
           <ul className="mt-2 space-y-1.5 text-sm md:text-base text-muted-foreground">
@@ -256,16 +256,16 @@ export default function Page() {
           </ul>
         </section>
 
-        {/* 9. Engagement Edalia */}
+        {/* 9. Engagement Kademya */}
         <section className="space-y-3">
           <div className="flex items-center gap-3">
             <Shield className="w-6 h-6 text-primary" />
             <h3 className="text-lg md:text-xl font-headline font-semibold">
-              9. Engagement Edalia envers les familles
+              9. Engagement Kademya envers les familles
             </h3>
           </div>
           <p className="text-sm md:text-base text-muted-foreground max-w-3xl">
-            Edalia n’est pas seulement un site de mise en relation. C’est un filtre, une
+            Kademya n’est pas seulement un site de mise en relation. C’est un filtre, une
             protection, et un standard pour les cours particuliers à Abidjan.
           </p>
           <ul className="mt-2 space-y-1.5 text-sm md:text-base text-muted-foreground">
@@ -283,14 +283,14 @@ export default function Page() {
               Vous êtes professeur et vous acceptez cette charte ?
             </p>
             <p className="text-xs md:text-sm text-muted-foreground max-w-lg">
-              Créez votre profil sur Edalia, soumettez vos documents, et rejoignez les
+              Créez votre profil sur Kademya, soumettez vos documents, et rejoignez les
               enseignants qui construisent un standard plus élevé pour les cours
               particuliers à Abidjan.
             </p>
           </div>
           <div className="flex flex-wrap gap-3">
             <Button asChild>
-              <Link href="/become-a-teacher">Devenir professeur sur Edalia</Link>
+              <Link href="/become-a-teacher">Devenir professeur sur Kademya</Link>
             </Button>
             <Button asChild variant="outline">
               <Link href="/teachers">Voir les professeurs vérifiés</Link>

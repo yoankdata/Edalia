@@ -144,7 +144,7 @@ export default function SubscriptionPage() {
   return (
     <DashboardLayout activePath="/teachers/dashboard/abonnement">
       <h1 className="text-3xl font-bold text-gray-800 mb-8">
-        Mon abonnement Edalia
+        Mon abonnement Kademya
       </h1>
 
       <div className="max-w-4xl space-y-8">
@@ -181,7 +181,7 @@ export default function SubscriptionPage() {
 
         <section className="bg-white p-6 rounded-lg shadow-md border-t-4 border-blue-600">
           <h2 className="text-xl font-semibold mb-4 text-gray-700">
-            Le plan Edalia (abonnement mensuel)
+            Le plan Kademya (abonnement mensuel)
           </h2>
           <p className="text-3xl font-extrabold text-blue-600 mb-4">
             {ABONNEMENT_PRIX.toLocaleString('fr-FR')} FCFA / 30 jours

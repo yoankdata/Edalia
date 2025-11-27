@@ -1,11 +1,12 @@
 import type { Metadata } from 'next';
 import './globals.css';
-import { Header } from '@/components/layout/header';
-import { Footer } from '@/components/layout/footer';
+import { Header } from '@/components/layout/Header';
+import { Footer } from '@/components/layout/Footer';
 import { Toaster } from '@/components/ui/toaster';
 import { Poppins, Nunito } from 'next/font/google';
 import { cn } from '@/lib/utils';
 import SupabaseProvider from '@/components/SupabaseProvider';
+
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -20,7 +21,7 @@ const nunito = Nunito({
 });
 
 export const metadata: Metadata = {
-  title: 'Edalia - Trouvez un professeur fiable à Abidjan',
+  title: 'Kademya - Trouvez un professeur fiable à Abidjan',
   description:
     'Mise en relation avec des professeurs vérifiés et passionnés pour des cours particuliers de qualité.',
   icons: null,

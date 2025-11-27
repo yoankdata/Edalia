@@ -32,24 +32,24 @@ const heroImage = findImage('hero-image');
 
 const faqItems = [
   {
-    question: 'Les professeurs sur Edalia sont-ils vraiment vérifiés ?',
+    question: 'Les professeurs sur Kademya sont-ils vraiment vérifiés ?',
     answer:
       'Oui. Chaque professeur est vérifié avant d’être accepté : identité, expérience, cohérence du profil et avis. Seuls les enseignants sérieux, pédagogues et recommandés apparaissent sur la plateforme. Vous choisissez en toute confiance.',
   },
   {
-    question: 'Combien coûtent les cours sur Edalia ?',
+    question: 'Combien coûtent les cours sur Kademya ?',
     answer:
       "Les tarifs varient selon le niveau et la matière, en moyenne entre 2 000 et 20 000 FCFA l’heure. Chaque professeur fixe librement son prix, affiché clairement sur son profil. Aucun frais caché, aucune surprise.",
   },
   {
     question: 'Comment se passe le paiement des cours ?',
     answer:
-      'Le paiement se fait directement entre le parent et le professeur, selon ce que vous préférez : cash, Mobile Money (Orange Money, MTN, Moov) ou virement. Edalia ne gère pas les paiements : vous gardez un contact direct et simple avec le professeur.',
+      'Le paiement se fait directement entre le parent et le professeur, selon ce que vous préférez : cash, Mobile Money (Orange Money, MTN, Moov) ou virement. Kademya ne gère pas les paiements : vous gardez un contact direct et simple avec le professeur.',
   },
   {
-    question: "Est-ce que Edalia remplace les cours à l’école ?",
+    question: "Est-ce que Kademya remplace les cours à l’école ?",
     answer:
-      "Non. Edalia complète le travail de l’école. Les professeurs aident les élèves à comprendre leurs leçons, renforcer les bases, préparer les examens et gagner en confiance. C’est un soutien ciblé qui vient renforcer la réussite scolaire.",
+      "Non. Kademya complète le travail de l’école. Les professeurs aident les élèves à comprendre leurs leçons, renforcer les bases, préparer les examens et gagner en confiance. C’est un soutien ciblé qui vient renforcer la réussite scolaire.",
   },
 ];
 
@@ -127,6 +127,16 @@ export default function Home() {
                   </Link>
                 </Button>
               </div>
+
+              {/* Info modèle côté prof */}
+              <p className="text-sm text-muted-foreground max-w-xl mx-auto lg:mx-0 mt-2">
+                Vous êtes professeur ? L’inscription est{' '}
+                <span className="font-semibold">100% gratuite</span>. L’abonnement de{' '}
+                <span className="font-semibold">10 000 FCFA / mois</span> vous permet
+                d’être visible dans le catalogue Kademya auprès des familles d’Abidjan.{' '}
+                <span className="font-semibold">0% de commission</span> sur vos cours :
+                les parents vous paient directement.
+              </p>
 
               {/* SOCIAL PROOF */}
               <div className="flex items-center justify-center lg:justify-start gap-4 pt-4 text-sm text-muted-foreground">
@@ -364,9 +374,9 @@ export default function Home() {
                     <div className="w-20 h-20 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-4 ring-8 ring-green-50/50">
                       <ShieldCheck className="w-10 h-10 text-green-600" />
                     </div>
-                    <h3 className="text-2xl font-bold">Charte de Qualité Edalia</h3>
+                    <h3 className="text-2xl font-bold">Charte de Qualité Kademya</h3>
                     <p className="text-muted-foreground leading-relaxed">
-                      En rejoignant Edalia, chaque professeur s&apos;engage à respecter
+                      En rejoignant Kademya, chaque professeur s&apos;engage à respecter
                       notre Charte de Qualité pensée pour le contexte ivoirien :
                       professionnalisme, sécurité, pédagogie adaptée et transparence avec
                       les familles.
@@ -404,7 +414,8 @@ export default function Home() {
               Prêt à transformer la scolarité de votre enfant ?
             </h2>
             <p className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto mb-10 leading-relaxed font-light">
-              Rejoignez les familles d&apos;Abidjan qui ont choisi la sérénité. <br className="hidden md:block" />
+              Rejoignez les familles d&apos;Abidjan qui ont choisi la sérénité.{' '}
+              <br className="hidden md:block" />
               Des résultats concrets, sans stress, dès le premier cours.
             </p>
 

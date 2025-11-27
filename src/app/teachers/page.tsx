@@ -2,14 +2,14 @@ import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 import { TeachersListClient } from './TeachersListClient';
 import type { TeacherForClient } from './TeacherCard';
-import { Metadata } from 'next';
+import type { Metadata } from 'next';
 import { AlertCircle } from 'lucide-react';
 
-// Optimisation SEO (On garde les méta-données pour Google)
+// Optimisation SEO
 export const metadata: Metadata = {
-  title: 'Trouvez un professeur particulier à Abidjan | Edalia',
+  title: 'Trouvez un professeur particulier à Abidjan | Kademya',
   description:
-    'Accédez à des centaines de professeurs vérifiés à Cocody, Yopougon, Marcory... Soutien scolaire, langues, musique et plus encore.',
+    'Accédez à des professeurs vérifiés à Cocody, Yopougon, Marcory, etc. Soutien scolaire, langues, musique et plus encore.',
 };
 
 // Type brut DB
@@ -25,6 +25,8 @@ type TeacherProfileDB = {
   verifie: boolean;
   avis_moyenne: number | null;
   avis_nombre: number | null;
+  abonnement_actif: boolean;
+  cree_le: string;
 };
 
 // Force le rendu dynamique pour avoir des données fraîches
@@ -33,18 +35,18 @@ export const dynamic = 'force-dynamic';
 export default async function TeachersPage() {
   const supabase = createServerComponentClient({ cookies });
 
-  // Récupération optimisée : on trie par date de création (les plus récents en premier)
+  // Récupération optimisée : profs actifs + vérifiés, triés par récence
   const { data, error } = await supabase
     .from('professeurs')
     .select(
-      'id, nom_complet, matiere, niveau, tarif_horaire, commune, biographie, photo_url, verifie, avis_moyenne, avis_nombre',
+      'id, nom_complet, matiere, niveau, tarif_horaire, commune, biographie, photo_url, verifie, avis_moyenne, avis_nombre, abonnement_actif, cree_le',
     )
     .eq('abonnement_actif', true)
     .eq('verifie', true)
-    .order('cree_le', { ascending: false }) 
+    .order('cree_le', { ascending: false })
     .limit(100);
 
-  // Gestion d'erreur stylisée (On garde ce design sympa au cas où la BDD plante)
+  // Gestion d'erreur stylisée
   if (error) {
     console.error('Erreur de chargement des professeurs:', error);
     return (
@@ -56,14 +58,18 @@ export default async function TeachersPage() {
           Oups, une erreur est survenue
         </h1>
         <p className="text-muted-foreground max-w-md mx-auto">
-          Nous n&apos;avons pas pu récupérer la liste des professeurs. Cela peut venir de votre connexion ou de nos serveurs.
+          Nous n&apos;avons pas pu récupérer la liste des professeurs. Cela
+          peut venir de votre connexion ou de nos serveurs.
         </p>
-        {/* On évite le onClick inline avec reload pour le server component, un simple lien ou revalidation suffit souvent, 
-            mais un bouton simple est acceptable ici */}
         <form>
-           <button formAction={async () => { 'use server'; }} className="mt-6 px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition">
-              Réessayer
-           </button>
+          <button
+            formAction={async () => {
+              'use server';
+            }}
+            className="mt-6 px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition"
+          >
+            Réessayer
+          </button>
         </form>
       </div>
     );
@@ -85,11 +91,9 @@ export default async function TeachersPage() {
     avis_nombre: t.avis_nombre ?? 0,
   }));
 
-  // On retourne simplement le composant client sans ajouter de Hero section supplémentaire
-  // pour éviter la duplication avec le titre qui est déjà dans TeachersListClient.
   return (
     <div className="min-h-screen bg-background">
-       <TeachersListClient initialTeachers={initialTeachers} />
+      <TeachersListClient initialTeachers={initialTeachers} />
     </div>
   );
 }

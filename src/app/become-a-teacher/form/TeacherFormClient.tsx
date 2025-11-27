@@ -1,24 +1,68 @@
+// src/app/become-a-teacher/form/TeacherFormClient.tsx
 'use client';
 
+import type { ElementType } from 'react';
 import { useActionState } from 'react';
 import { useFormStatus } from 'react-dom';
+import Link from 'next/link';
+
 import { createTeacherCandidate } from './actions';
-import { initialFormState } from './form-state';
+import {
+  initialFormState,
+  MATIERES,
+  NIVEAUX,
+  COMMUNES,
+  TeacherFormValues,
+} from './form-state';
+
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
 
+import {
+  User,
+  Mail,
+  BookOpen,
+  TrendingUp,
+  MapPin,
+  DollarSign,
+  Phone,
+  PencilLine,
+  CheckCircle,
+  AlertTriangle,
+  Camera,
+} from 'lucide-react';
+
+// Bouton de soumission avec état pending
 function SubmitButton() {
   const { pending } = useFormStatus();
 
   return (
-    <Button type="submit" size="lg" disabled={pending}>
+    <Button
+      type="submit"
+      size="lg"
+      disabled={pending}
+      className="w-full sm:w-auto transition-colors duration-300"
+    >
       {pending ? 'Envoi en cours…' : 'Envoyer ma candidature'}
     </Button>
   );
 }
+
+// Map des icônes par champ texte
+const fieldIcons: Partial<Record<keyof TeacherFormValues, ElementType>> = {
+  nom_complet: User,
+  email: Mail,
+  matiere: BookOpen,
+  niveau: TrendingUp,
+  commune: MapPin,
+  tarif_horaire: DollarSign,
+  numero_whatsapp: Phone,
+  biographie: PencilLine,
+};
 
 type Props = {
   submitted: boolean;
@@ -27,178 +71,381 @@ type Props = {
 export default function TeacherFormClient({ submitted }: Props) {
   const [state, formAction] = useActionState(
     createTeacherCandidate,
-    initialFormState
+    initialFormState,
   );
 
+  // Champ texte / textarea générique
+  const InputField = ({
+    id,
+    label,
+    name,
+    type = 'text',
+    placeholder = '',
+    required = true,
+    min,
+  }: {
+    id: string;
+    label: string;
+    name: keyof TeacherFormValues;
+    type?: string;
+    placeholder?: string;
+    required?: boolean;
+    min?: number;
+  }) => {
+    const Icon = fieldIcons[name];
+
+    return (
+      <div className="space-y-2">
+        <Label htmlFor={id} className="flex items-center gap-2 font-semibold">
+          {Icon && (
+            <Icon className="h-4 w-4 text-green-600 dark:text-green-400" />
+          )}
+          {label}
+        </Label>
+
+        {name === 'biographie' ? (
+          <Textarea
+            id={id}
+            name={name}
+            rows={5}
+            placeholder={placeholder}
+            defaultValue={state.values[name]}
+            required={required}
+            className="focus-visible:ring-green-500"
+          />
+        ) : (
+          <Input
+            id={id}
+            name={name}
+            type={type}
+            placeholder={placeholder}
+            defaultValue={state.values[name]}
+            required={required}
+            min={min}
+            className="focus-visible:ring-green-500"
+          />
+        )}
+
+        {state.errors[name] && (
+          <p className="text-xs text-red-500 flex items-center gap-1 mt-1">
+            <AlertTriangle className="h-3 w-3" />
+            {state.errors[name]}
+          </p>
+        )}
+      </div>
+    );
+  };
+
+  // Select réutilisable (matière / niveau / commune)
+  const SelectField = ({
+    id,
+    label,
+    name,
+    options,
+  }: {
+    id: string;
+    label: string;
+    name: keyof TeacherFormValues;
+    options: string[];
+  }) => {
+    const Icon = fieldIcons[name];
+
+    return (
+      <div className="space-y-2">
+        <Label htmlFor={id} className="flex items-center gap-2 font-semibold">
+          {Icon && (
+            <Icon className="h-4 w-4 text-green-600 dark:text-green-400" />
+          )}
+          {label}
+        </Label>
+        <select
+          id={id}
+          name={name}
+          defaultValue={state.values[name]}
+          required
+          className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          <option value="" disabled>
+            Sélectionner...
+          </option>
+          {options.map(option => (
+            <option key={option} value={option}>
+              {option}
+            </option>
+          ))}
+        </select>
+
+        {state.errors[name] && (
+          <p className="text-xs text-red-500 flex items-center gap-1 mt-1">
+            <AlertTriangle className="h-3 w-3" />
+            {state.errors[name]}
+          </p>
+        )}
+      </div>
+    );
+  };
+
+  // Succès (via state ou via query ?submitted=1)
+  if (state.success || submitted) {
+    return (
+      <div className="container mx-auto px-4 py-24 md:py-32 max-w-xl text-center min-h-[80vh]">
+        <CheckCircle className="h-16 w-16 text-green-600 mx-auto mb-6" />
+        <h1 className="text-3xl md:text-4xl font-headline font-bold text-gray-900 dark:text-white mb-4">
+          Ta candidature a bien été envoyée !
+        </h1>
+        <p className="text-lg text-muted-foreground mb-6">
+          Merci pour ta confiance. Ton profil sera vérifié par l&apos;équipe
+          Kademya dans les prochaines heures.
+        </p>
+        <p className="text-base text-gray-700 dark:text-gray-200 mb-8">
+          <span className="font-semibold">
+            Étape suivante obligatoire pour être visible :
+          </span>{' '}
+          active ton abonnement{' '}
+          <span className="font-semibold">(10 000 FCFA / mois)</span> pour
+          apparaître dans le catalogue Kademya auprès des parents d&apos;Abidjan.
+          Sans abonnement actif, ton profil restera invisible, même après
+          validation.
+        </p>
+
+        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <Button asChild className="px-8">
+            <Link href="/subscription">Activer mon abonnement</Link>
+          </Button>
+          <Button asChild variant="outline">
+            <Link href="/">Retourner à l&apos;accueil</Link>
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  // Formulaire principal
   return (
-    <div className="bg-background">
-      <main className="container mx-auto px-4 py-12 md:py-16 max-w-3xl space-y-8">
-        <div className="space-y-3">
-          <h1 className="text-3xl md:text-4xl font-headline font-semibold">
-            Créer mon profil enseignant
+    <div className="bg-gray-50 dark:bg-gray-900 min-h-screen">
+      <main className="container mx-auto px-4 py-12 md:py-16 max-w-4xl space-y-8">
+        <div className="space-y-4 text-center">
+          <h1 className="text-3xl md:text-5xl font-headline font-bold text-gray-900 dark:text-white">
+            Rejoignez la communauté Kademya
           </h1>
-          <p className="text-muted-foreground max-w-2xl">
-            Remplissez ce formulaire pour rejoindre Edalia. Nous vérifions
-            chaque profil manuellement avant publication pour garantir la
-            confiance des familles.
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            Remplissez ce formulaire pour créer votre profil enseignant. Nous
+            vérifions chaque candidature manuellement pour garantir
+            l&apos;excellence et la confiance des familles à Abidjan.
           </p>
         </div>
 
-        {submitted && (
-          <div className="rounded-lg border border-primary/30 bg-primary/5 px-4 py-3 text-sm text-primary">
-            Votre demande a bien été envoyée. Nous vous contacterons sous 24h
-            pour finaliser la vérification de votre profil.
+        {state.errors.global && (
+          <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-600 dark:text-red-400 dark:bg-red-500/10 mb-4 flex items-center gap-2">
+            <AlertTriangle className="h-4 w-4" />
+            <p>{state.errors.global}</p>
           </div>
         )}
 
-        {state.errors.global && !submitted && (
-          <div className="rounded-lg border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm text-destructive mb-4">
-            {state.errors.global}
-          </div>
-        )}
-
-        <Card className="shadow-md">
+        <Card className="shadow-xl border-t-4 border-green-500 dark:border-green-400">
           <CardHeader>
-            <CardTitle className="font-headline text-xl">
-              Informations principales
+            <CardTitle className="font-headline text-2xl text-gray-800 dark:text-white">
+              Détails de ma candidature
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <form action={formAction} className="space-y-6">
+            <form action={formAction} className="space-y-8">
               <div className="grid md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <Label htmlFor="nom_complet">Nom complet</Label>
-                  <Input
-                    id="nom_complet"
-                    name="nom_complet"
-                    defaultValue={state.values.nom_complet}
-                    required
-                  />
-                  {state.errors.nom_complet && (
-                    <p className="text-xs text-destructive">
-                      {state.errors.nom_complet}
-                    </p>
-                  )}
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="email">Adresse e-mail (optionnel)</Label>
-                  <Input
-                    id="email"
-                    name="email"
-                    type="email"
-                    defaultValue={state.values.email}
-                  />
-                  {state.errors.email && (
-                    <p className="text-xs text-destructive">
-                      {state.errors.email}
-                    </p>
-                  )}
-                </div>
-              </div>
-
-              <div className="grid md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <Label htmlFor="matiere">Matière principale</Label>
-                  <Input
-                    id="matiere"
-                    name="matiere"
-                    placeholder="Mathématiques, Français..."
-                    defaultValue={state.values.matiere}
-                    required
-                  />
-                  {state.errors.matiere && (
-                    <p className="text-xs text-destructive">
-                      {state.errors.matiere}
-                    </p>
-                  )}
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="niveau">Niveau</Label>
-                  <Input
-                    id="niveau"
-                    name="niveau"
-                    placeholder="Primaire, Collège, Lycée, Supérieur..."
-                    defaultValue={state.values.niveau}
-                    required
-                  />
-                  {state.errors.niveau && (
-                    <p className="text-xs text-destructive">
-                      {state.errors.niveau}
-                    </p>
-                  )}
-                </div>
-              </div>
-
-              <div className="grid md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <Label htmlFor="commune">Commune</Label>
-                  <Input
-                    id="commune"
-                    name="commune"
-                    placeholder="Cocody, Yopougon, Marcory..."
-                    defaultValue={state.values.commune}
-                    required
-                  />
-                  {state.errors.commune && (
-                    <p className="text-xs text-destructive">
-                      {state.errors.commune}
-                    </p>
-                  )}
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="tarif_horaire">Tarif horaire (FCFA)</Label>
-                  <Input
-                    id="tarif_horaire"
-                    name="tarif_horaire"
-                    type="number"
-                    min={0}
-                    placeholder="6000"
-                    defaultValue={state.values.tarif_horaire}
-                  />
-                  {state.errors.tarif_horaire && (
-                    <p className="text-xs text-destructive">
-                      {state.errors.tarif_horaire}
-                    </p>
-                  )}
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="numero_whatsapp">Numéro WhatsApp</Label>
-                <Input
-                  id="numero_whatsapp"
-                  name="numero_whatsapp"
-                  placeholder="2250700000000"
-                  defaultValue={state.values.numero_whatsapp}
+                <InputField
+                  id="nom_complet"
+                  label="Nom complet (tel qu'il apparaîtra sur votre profil)"
+                  name="nom_complet"
                   required
                 />
-                {state.errors.numero_whatsapp && (
-                  <p className="text-xs text-destructive">
-                    {state.errors.numero_whatsapp}
-                  </p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="biographie">Présentez-vous</Label>
-                <Textarea
-                  id="biographie"
-                  name="biographie"
-                  rows={5}
-                  placeholder="Parlez de votre expérience, de votre façon d’enseigner, des niveaux que vous prenez en charge..."
-                  defaultValue={state.values.biographie}
+                <InputField
+                  id="email"
+                  label="Adresse e-mail (Optionnel)"
+                  name="email"
+                  type="email"
+                  required={false}
                 />
-                {state.errors.biographie && (
-                  <p className="text-xs text-destructive">
-                    {state.errors.biographie}
-                  </p>
-                )}
               </div>
 
-              <div className="pt-2 flex justify-end">
+              <div className="grid md:grid-cols-2 gap-6">
+                <SelectField
+                  id="matiere"
+                  label="Matière principale enseignée"
+                  name="matiere"
+                  options={MATIERES}
+                />
+                <SelectField
+                  id="niveau"
+                  label="Niveau de scolarité principal"
+                  name="niveau"
+                  options={NIVEAUX}
+                />
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-6">
+                <SelectField
+                  id="commune"
+                  label="Commune de résidence (Abidjan)"
+                  name="commune"
+                  options={COMMUNES}
+                />
+                <InputField
+                  id="tarif_horaire"
+                  label="Tarif horaire souhaité (FCFA)"
+                  name="tarif_horaire"
+                  type="number"
+                  min={0}
+                  placeholder="Ex: 6000"
+                  required
+                />
+              </div>
+
+              <InputField
+                id="numero_whatsapp"
+                label="Numéro WhatsApp"
+                name="numero_whatsapp"
+                placeholder="2250700000000"
+                required
+              />
+
+              <InputField
+                id="biographie"
+                label="Présentez-vous"
+                name="biographie"
+                placeholder="Expérience, méthodes, diplômes..."
+                required
+              />
+
+              {/* Section pièces justificatives */}
+              <section className="space-y-4 border-t pt-6 mt-2">
+                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+                  Pièces justificatives
+                </h2>
+                <p className="text-sm text-muted-foreground">
+                  Ces documents servent uniquement à vérifier votre identité et
+                  vos diplômes. Ils ne seront jamais visibles publiquement.
+                </p>
+
+                {/* Photo de profil optionnelle */}
+                <div className="space-y-2">
+                  <Label
+                    htmlFor="photo_profil"
+                    className="font-semibold flex items-center gap-2"
+                  >
+                    <Camera className="h-4 w-4 text-green-600 dark:text-green-400" />
+                    Photo de profil (recommandé)
+                  </Label>
+                  <Input
+                    id="photo_profil"
+                    name="photo_profil"
+                    type="file"
+                    accept="image/*"
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Format portrait ou carré, visage bien visible. Cette photo
+                    apparaîtra sur votre profil public après validation.
+                  </p>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-6">
+                  {/* Pièce d’identité */}
+                  <div className="space-y-2">
+                    <Label htmlFor="id_document" className="font-semibold">
+                      Pièce d&apos;identité (obligatoire)
+                    </Label>
+                    <Input
+                      id="id_document"
+                      name="id_document"
+                      type="file"
+                      accept=".pdf,image/*"
+                      required
+                    />
+                  </div>
+
+                  {/* Diplôme / attestation */}
+                  <div className="space-y-2">
+                    <Label
+                      htmlFor="diplome_document"
+                      className="font-semibold"
+                    >
+                      Diplôme ou attestation (obligatoire)
+                    </Label>
+                    <Input
+                      id="diplome_document"
+                      name="diplome_document"
+                      type="file"
+                      accept=".pdf,image/*"
+                      required
+                    />
+                  </div>
+                </div>
+              </section>
+
+              {/* Consentement & CGU */}
+              <section className="space-y-4 border-t pt-6">
+                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+                  Consentement & conditions
+                </h2>
+                <p className="text-sm text-muted-foreground">
+                  En poursuivant, vous certifiez que les informations fournies
+                  sont exactes. Vos documents sont utilisés uniquement pour
+                  vérifier votre profil enseignant et ne sont jamais partagés
+                  publiquement.
+                </p>
+
+                <div className="flex items-start gap-3">
+                  <Checkbox
+                    id="cgu_accepted"
+                    name="cgu_accepted"
+                    required
+                    className="mt-1"
+                  />
+                  <div className="space-y-1 text-sm text-gray-700 dark:text-gray-200">
+                    <label
+                      htmlFor="cgu_accepted"
+                      className="font-medium cursor-pointer"
+                    >
+                      J’accepte les CGU et la politique de confidentialité
+                      de Kademya.
+                    </label>
+                    <p className="text-xs text-muted-foreground">
+                      En cochant cette case, j&apos;autorise Kademya à collecter
+                      et traiter mes données personnelles (y compris ma pièce
+                      d&apos;identité et mes diplômes) uniquement pour la
+                      vérification de mon profil et la mise en relation avec les
+                      familles.
+                    </p>
+                    <p className="text-xs">
+                      Lire les{' '}
+                      <Link href="/cgu" className="underline">
+                        Conditions Générales d&apos;Utilisation
+                      </Link>{' '}
+                      et la{' '}
+                      <Link href="/confidentialite" className="underline">
+                        Politique de confidentialité
+                      </Link>
+                      .
+                    </p>
+
+                    {state.errors.cgu_accepted && (
+                      <p className="text-xs text-red-500 flex items-center gap-1 mt-1">
+                        <AlertTriangle className="h-3 w-3" />
+                        {state.errors.cgu_accepted}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </section>
+
+              {/* Rappel modèle avant le bouton */}
+              <p className="text-sm text-muted-foreground pt-2">
+                L’inscription est <span className="font-semibold">100% gratuite</span>. Après
+                validation de votre profil, vous pourrez activer votre abonnement{' '}
+                <span className="font-semibold">(10 000 FCFA / mois)</span> pour
+                apparaître dans le catalogue Kademya et être visible auprès des familles
+                d’Abidjan.
+              </p>
+
+              <div className="pt-4 flex justify-end">
                 <SubmitButton />
               </div>
             </form>

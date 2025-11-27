@@ -171,7 +171,7 @@ export function TeachersListClient({ initialTeachers }: TeachersListClientProps)
         </h1>
         <p className="text-sm md:text-base text-muted-foreground max-w-2xl mx-auto">
           Tous les professeurs présentés ici ont un profil vérifié et un
-          abonnement actif sur Edalia. Filtrez par matière, niveau et commune
+          abonnement actif sur Kademya. Filtrez par matière, niveau et commune
           pour trouver l&apos;accompagnement le plus adapté.
         </p>
       </header>
@@ -210,7 +210,7 @@ export function TeachersListClient({ initialTeachers }: TeachersListClientProps)
       {!hasTeachers ? (
         <div className="text-center p-12 bg-card rounded-lg shadow-sm border border-border">
           <p className="text-lg text-muted-foreground">
-            Aucun professeur n&apos;est encore inscrit sur Edalia.
+            Aucun professeur n&apos;est encore inscrit sur Kademya.
           </p>
         </div>
       ) : filteredTeachers.length === 0 ? (

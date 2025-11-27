@@ -99,7 +99,7 @@ export default function TeacherDashboardPage() {
 
       {/* Bloc d'Alertes et Statut */}
       <div className="mb-8 p-6 bg-white rounded-lg shadow-xl border-t-4 border-blue-600">
-        <h2 className="text-xl font-semibold text-gray-700 mb-5">Statut de votre compte Edalia</h2>
+        <h2 className="text-xl font-semibold text-gray-700 mb-5">Statut de votre compte Kademya</h2>
         
         <div className="flex flex-wrap gap-6">
           <StatCard 

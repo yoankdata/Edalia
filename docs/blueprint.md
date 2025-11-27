@@ -1,12 +1,12 @@
-# **App Name**: Edalia
+# **App Name**: Kademya
 
 ## Core Features:
 
 - Home Page: Landing page with clear value proposition and calls to action.
 - Teacher List: Browse a directory of verified teachers with key information.
 - Teacher Profile: Detailed profile pages for each teacher, including subjects, rates and contact information.
-- Become a Teacher: Landing page for teachers to sign up and create a profile on Edalia.
-- About & Contact: Information about Edalia's mission and contact details.
+- Become a Teacher: Landing page for teachers to sign up and create a profile on Kademya.
+- About & Contact: Information about Kademya's mission and contact details.
 - WhatsApp Integration: Direct WhatsApp contact links for parents to connect with teachers.
 
 ## Style Guidelines:

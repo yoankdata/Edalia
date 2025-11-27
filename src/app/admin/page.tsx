@@ -1,3 +1,4 @@
+// src/app/admin/page.tsx
 'use client';
 
 import { useEffect, useState, useTransition, useMemo } from 'react';
@@ -6,6 +7,8 @@ import { supabaseBrowser } from '@/lib/supabase-browser';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+
+// -------------------- TYPES --------------------
 
 type DemandeProf = {
   id: string;
@@ -19,6 +22,9 @@ type DemandeProf = {
   biographie: string | null;
   statut: 'en_attente' | 'approuve' | 'refuse';
   cree_le: string;
+  id_document_path: string | null;
+  diplome_document_path: string | null;
+  photo_profil_path: string | null;
 };
 
 type Professeur = {
@@ -36,6 +42,26 @@ type Professeur = {
   abonnement_expire_le: string | null;
 };
 
+// -------------------- HELPERS STORAGE --------------------
+
+// URL publique documents (CNI / diplôme)
+function getTeacherDocumentUrl(path: string | null): string | null {
+  if (!path) return null;
+  const { data } = supabaseBrowser.storage
+    .from('teacher-documents')
+    .getPublicUrl(path);
+  return data?.publicUrl ?? null;
+}
+
+// URL publique photo de profil (stockée dans teacher-photos)
+function getTeacherPhotoUrl(path: string | null): string | null {
+  if (!path) return null;
+  const { data } = supabaseBrowser.storage
+    .from('teacher-photos')
+    .getPublicUrl(path);
+  return data?.publicUrl ?? null;
+}
+
 export default function AdminPage() {
   const router = useRouter();
 
@@ -46,7 +72,8 @@ export default function AdminPage() {
   const [profs, setProfs] = useState<Professeur[]>([]);
   const [isPending, startTransition] = useTransition();
 
-  // Vérification admin
+  // -------------------- AUTH ADMIN --------------------
+
   useEffect(() => {
     async function checkAuth() {
       const { data, error } = await supabaseBrowser.auth.getUser();
@@ -59,7 +86,8 @@ export default function AdminPage() {
     checkAuth();
   }, [router]);
 
-  // Charger demandes + profs
+  // -------------------- CHARGEMENT DONNÉES --------------------
+
   useEffect(() => {
     if (loadingUser) return;
 
@@ -70,7 +98,9 @@ export default function AdminPage() {
         .select('*')
         .order('cree_le', { ascending: false });
 
-      if (!error) setDemandes(data as DemandeProf[]);
+      if (!error && data) {
+        setDemandes(data as DemandeProf[]);
+      }
       setLoadingDemandes(false);
     }
 
@@ -81,7 +111,9 @@ export default function AdminPage() {
         .select('*')
         .order('cree_le', { ascending: false });
 
-      if (!error) setProfs(data as Professeur[]);
+      if (!error && data) {
+        setProfs(data as Professeur[]);
+      }
       setLoadingProfs(false);
     }
 
@@ -89,32 +121,38 @@ export default function AdminPage() {
     fetchProfs();
   }, [loadingUser]);
 
-  // --------- ACTIONS DEMANDES ---------
+  // -------------------- ACTIONS DEMANDES --------------------
 
   // APPROUVER DEMANDE → créer prof + marquer demande approuvée
   async function handleApprove(demande: DemandeProf) {
     startTransition(async () => {
-      const { error: insertError } = await supabaseBrowser.from('professeurs').insert([
-        {
-          nom_complet: demande.nom_complet,
-          matiere: demande.matiere,
-          niveau: demande.niveau,
-          commune: demande.commune,
-          tarif_horaire: demande.tarif_horaire,
-          biographie: demande.biographie,
-          photo_url: null,
-          numero_whatsapp: demande.numero_whatsapp,
-          verifie: false,
-          abonnement_actif: false,
-          abonnement_expire_le: null,
-        },
-      ]);
+      // Générer l'URL publique à partir du path stocké dans la demande
+      const photoUrl = getTeacherPhotoUrl(demande.photo_profil_path);
+
+      const { error: insertError } = await supabaseBrowser
+        .from('professeurs')
+        .insert([
+          {
+            nom_complet: demande.nom_complet,
+            matiere: demande.matiere,
+            niveau: demande.niveau,
+            commune: demande.commune,
+            tarif_horaire: demande.tarif_horaire,
+            biographie: demande.biographie,
+            photo_url: photoUrl, // <-- utilisé ensuite par les pages publiques
+            numero_whatsapp: demande.numero_whatsapp,
+            verifie: false,
+            abonnement_actif: false,
+            abonnement_expire_le: null,
+          },
+        ]);
 
       if (insertError) {
         console.error('Erreur insertion professeur:', insertError.message);
         return;
       }
 
+      // Marquer la demande comme approuvée
       const { error: updateError } = await supabaseBrowser
         .from('demandes_professeurs')
         .update({ statut: 'approuve' })
@@ -122,7 +160,9 @@ export default function AdminPage() {
 
       if (!updateError) {
         setDemandes(prev =>
-          prev.map(d => (d.id === demande.id ? { ...d, statut: 'approuve' } : d)),
+          prev.map(d =>
+            d.id === demande.id ? { ...d, statut: 'approuve' } : d,
+          ),
         );
       }
 
@@ -132,7 +172,9 @@ export default function AdminPage() {
         .select('*')
         .order('cree_le', { ascending: false });
 
-      if (!profsError) setProfs(profsData as Professeur[]);
+      if (!profsError && profsData) {
+        setProfs(profsData as Professeur[]);
+      }
     });
   }
 
@@ -145,12 +187,14 @@ export default function AdminPage() {
 
     if (!error) {
       setDemandes(prev =>
-        prev.map(d => (d.id === demande.id ? { ...d, statut: 'refuse' } : d)),
+        prev.map(d =>
+          d.id === demande.id ? { ...d, statut: 'refuse' } : d,
+        ),
       );
     }
   }
 
-  // --------- ACTIONS PROFS ---------
+  // -------------------- ACTIONS PROFS --------------------
 
   // TOGGLE VERIFICATION
   async function handleToggleVerification(prof: Professeur) {
@@ -161,7 +205,9 @@ export default function AdminPage() {
 
     if (!error) {
       setProfs(prev =>
-        prev.map(p => (p.id === prof.id ? { ...p, verifie: !p.verifie } : p)),
+        prev.map(p =>
+          p.id === prof.id ? { ...p, verifie: !p.verifie } : p,
+        ),
       );
     }
   }
@@ -224,7 +270,6 @@ export default function AdminPage() {
   async function handleRenewSubscription(prof: Professeur) {
     const now = new Date();
     const expire = new Date();
-    // On repart de maintenant (simple et lisible)
     expire.setDate(now.getDate() + 30);
 
     const { error } = await supabaseBrowser
@@ -250,14 +295,13 @@ export default function AdminPage() {
     }
   }
 
-  // --------- STATS + EXPIRATION ---------
+  // -------------------- STATS / EXPIRATIONS --------------------
 
-  // Différence en jours entre aujourd'hui et une date YYYY-MM-DD
   const getDaysUntil = (dateStr: string | null): number | null => {
     if (!dateStr) return null;
     const today = new Date();
     const target = new Date(dateStr);
-    // Normaliser à minuit pour limiter les décalages
+
     const t0 = new Date(
       today.getFullYear(),
       today.getMonth(),
@@ -268,6 +312,7 @@ export default function AdminPage() {
       target.getMonth(),
       target.getDate(),
     ).getTime();
+
     const diffMs = t1 - t0;
     return Math.round(diffMs / (1000 * 60 * 60 * 24));
   };
@@ -313,6 +358,8 @@ export default function AdminPage() {
     };
   }, [profs, demandes]);
 
+  // -------------------- RENDU --------------------
+
   if (loadingUser) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -327,7 +374,7 @@ export default function AdminPage() {
         {/* HEADER */}
         <div className="flex items-center justify-between">
           <h1 className="text-2xl md:text-3xl font-headline font-semibold">
-            Administration Edalia – Professeurs
+            Administration Kademya – Professeurs
           </h1>
           <Button
             variant="outline"
@@ -340,7 +387,7 @@ export default function AdminPage() {
           </Button>
         </div>
 
-        {/* DASHBOARD STATS */}
+        {/* STATS */}
         <section>
           <h2 className="text-lg font-semibold mb-3">Vue d&apos;ensemble</h2>
           <div className="grid gap-4 md:grid-cols-4">
@@ -367,7 +414,7 @@ export default function AdminPage() {
               <CardContent>
                 <div className="text-2xl font-bold">{abonnesActifs}</div>
                 <p className="text-xs text-muted-foreground">
-                  Professeurs actuellement visibles sur Edalia
+                  Professeurs actuellement visibles sur Kademya
                 </p>
               </CardContent>
             </Card>
@@ -406,73 +453,143 @@ export default function AdminPage() {
 
         {/* DEMANDES */}
         <section>
-          <h2 className="text-xl font-semibold mb-4">Demandes de professeurs</h2>
+          <h2 className="text-xl font-semibold mb-4">
+            Demandes de professeurs
+          </h2>
 
           {loadingDemandes ? (
             <p className="text-muted-foreground">Chargement…</p>
-          ) : demandes.length === 0 ? (
+          ) : totalDemandes === 0 ? (
             <p className="text-muted-foreground">Aucune demande.</p>
           ) : (
             <div className="space-y-4">
-              {demandes.map(demande => (
-                <Card key={demande.id}>
-                  <CardHeader className="flex flex-row justify-between items-center gap-4">
-                    <div>
-                      <CardTitle>
-                        {demande.nom_complet}{' '}
-                        <span className="text-sm text-muted-foreground">
-                          — {demande.matiere} ({demande.niveau})
-                        </span>
-                      </CardTitle>
-                      <p className="text-sm text-muted-foreground">
-                        {demande.commune} • WhatsApp : {demande.numero_whatsapp}
-                        {demande.email && ` • Email : ${demande.email}`}
-                      </p>
-                    </div>
-                    <Badge
-                      variant="outline"
-                      className={
-                        demande.statut === 'approuve'
-                          ? 'border-green-500 text-green-500'
-                          : demande.statut === 'refuse'
-                          ? 'border-red-500 text-red-500'
-                          : 'border-amber-500 text-amber-500'
-                      }
-                    >
-                      {demande.statut === 'en_attente' && 'En attente'}
-                      {demande.statut === 'approuve' && 'Approuvé'}
-                      {demande.statut === 'refuse' && 'Refusé'}
-                    </Badge>
-                  </CardHeader>
+              {demandes.map(demande => {
+                const idDocUrl = getTeacherDocumentUrl(
+                  demande.id_document_path,
+                );
+                const diplomeUrl = getTeacherDocumentUrl(
+                  demande.diplome_document_path,
+                );
+                const photoUrl = getTeacherPhotoUrl(demande.photo_profil_path);
 
-                  <CardContent className="space-y-3">
-                    {demande.biographie && (
-                      <p className="text-sm text-muted-foreground">
-                        {demande.biographie}
-                      </p>
-                    )}
+                return (
+                  <Card key={demande.id}>
+                    <CardHeader className="flex flex-row justify-between items-center gap-4">
+                      <div>
+                        <CardTitle>
+                          {demande.nom_complet}{' '}
+                          <span className="text-sm text-muted-foreground">
+                            — {demande.matiere} ({demande.niveau})
+                          </span>
+                        </CardTitle>
+                        <p className="text-sm text-muted-foreground">
+                          {demande.commune} • WhatsApp :{' '}
+                          {demande.numero_whatsapp}
+                          {demande.email && ` • Email : ${demande.email}`}
+                        </p>
+                      </div>
 
-                    <div className="flex flex-wrap gap-3">
-                      <Button
-                        size="sm"
-                        disabled={demande.statut !== 'en_attente' || isPending}
-                        onClick={() => handleApprove(demande)}
-                      >
-                        {isPending ? 'Publication…' : 'Valider & publier'}
-                      </Button>
-
-                      <Button
-                        size="sm"
+                      <Badge
                         variant="outline"
-                        disabled={demande.statut !== 'en_attente'}
-                        onClick={() => handleReject(demande)}
+                        className={
+                          demande.statut === 'approuve'
+                            ? 'border-green-500 text-green-500'
+                            : demande.statut === 'refuse'
+                            ? 'border-red-500 text-red-500'
+                            : 'border-amber-500 text-amber-500'
+                        }
                       >
-                        Refuser
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+                        {demande.statut === 'en_attente' && 'En attente'}
+                        {demande.statut === 'approuve' && 'Approuvé'}
+                        {demande.statut === 'refuse' && 'Refusé'}
+                      </Badge>
+                    </CardHeader>
+
+                    <CardContent className="space-y-3">
+                      {demande.biographie && (
+                        <p className="text-sm text-muted-foreground">
+                          {demande.biographie}
+                        </p>
+                      )}
+
+                      {/* Documents fournis */}
+                      <div className="text-xs text-muted-foreground space-y-1">
+                        <p className="font-semibold text-foreground">
+                          Documents fournis :
+                        </p>
+                        <p>
+                          Pièce d&apos;identité :{' '}
+                          {idDocUrl ? (
+                            <a
+                              href={idDocUrl}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="text-emerald-700 underline"
+                            >
+                              Voir le document
+                            </a>
+                          ) : (
+                            <span className="text-red-500">non fournie</span>
+                          )}
+                        </p>
+                        <p>
+                          Diplôme / attestation :{' '}
+                          {diplomeUrl ? (
+                            <a
+                              href={diplomeUrl}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="text-emerald-700 underline"
+                            >
+                              Voir le document
+                            </a>
+                          ) : (
+                            <span className="text-red-500">non fourni</span>
+                          )}
+                        </p>
+                        <p>
+                          Photo de profil :{' '}
+                          {photoUrl ? (
+                            <a
+                              href={photoUrl}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="text-emerald-700 underline"
+                            >
+                              Voir la photo
+                            </a>
+                          ) : (
+                            <span className="text-muted-foreground">
+                              non fournie
+                            </span>
+                          )}
+                        </p>
+                      </div>
+
+                      <div className="flex flex-wrap gap-3">
+                        <Button
+                          size="sm"
+                          disabled={
+                            demande.statut !== 'en_attente' || isPending
+                          }
+                          onClick={() => handleApprove(demande)}
+                        >
+                          {isPending ? 'Publication…' : 'Valider & publier'}
+                        </Button>
+
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          disabled={demande.statut !== 'en_attente'}
+                          onClick={() => handleReject(demande)}
+                        >
+                          Refuser
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                );
+              })}
             </div>
           )}
         </section>
@@ -488,7 +605,9 @@ export default function AdminPage() {
           ) : (
             <div className="space-y-4">
               {profs.map(prof => {
-                const daysUntilExpire = getDaysUntil(prof.abonnement_expire_le);
+                const daysUntilExpire = getDaysUntil(
+                  prof.abonnement_expire_le,
+                );
                 const expiringSoon =
                   prof.abonnement_actif &&
                   daysUntilExpire !== null &&
@@ -509,7 +628,8 @@ export default function AdminPage() {
                           </span>
                         </CardTitle>
                         <p className="text-sm text-muted-foreground">
-                          Commune : {prof.commune} • WhatsApp : {prof.numero_whatsapp}
+                          Commune : {prof.commune} • WhatsApp :{' '}
+                          {prof.numero_whatsapp}
                         </p>
                       </div>
 
@@ -525,7 +645,8 @@ export default function AdminPage() {
                             {prof.verifie ? 'Vérifié' : 'Non vérifié'}
                           </Badge>
 
-                          {prof.abonnement_actif && prof.abonnement_expire_le ? (
+                          {prof.abonnement_actif &&
+                          prof.abonnement_expire_le ? (
                             <Badge
                               className={
                                 expiringSoon
@@ -533,13 +654,18 @@ export default function AdminPage() {
                                   : 'bg-emerald-600 text-white'
                               }
                             >
-                              {expiringSoon ? 'Expire bientôt • ' : 'Abonné jusqu’au '}
+                              {expiringSoon
+                                ? 'Expire bientôt • '
+                                : 'Abonné jusqu’au '}
+
                               {new Date(
                                 prof.abonnement_expire_le,
                               ).toLocaleDateString('fr-FR')}
                             </Badge>
                           ) : (
-                            <Badge variant="outline">Pas d&apos;abonnement</Badge>
+                            <Badge variant="outline">
+                              Pas d&apos;abonnement
+                            </Badge>
                           )}
                         </div>
                       </div>
@@ -557,7 +683,9 @@ export default function AdminPage() {
                           size="sm"
                           onClick={() => handleToggleVerification(prof)}
                         >
-                          {prof.verifie ? 'Retirer vérification' : 'Vérifier'}
+                          {prof.verifie
+                            ? 'Retirer vérification'
+                            : 'Vérifier'}
                         </Button>
 
                         {!prof.abonnement_actif ? (
@@ -566,7 +694,7 @@ export default function AdminPage() {
                             variant="outline"
                             onClick={() => handleActivateSubscription(prof)}
                           >
-                            Activer abonnement 30 jours (5 000 FCFA)
+                            Activer abonnement 30 jours (10 000 FCFA)
                           </Button>
                         ) : (
                           <>
@@ -580,7 +708,9 @@ export default function AdminPage() {
                             <Button
                               size="sm"
                               variant="destructive"
-                              onClick={() => handleDeactivateSubscription(prof)}
+                              onClick={() =>
+                                handleDeactivateSubscription(prof)
+                              }
                             >
                               Désactiver abonnement
                             </Button>

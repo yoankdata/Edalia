@@ -1,4 +1,4 @@
-# Edalia
+# Kademya
 
 Plateforme web qui connecte **parents, élèves et professeurs à Abidjan**, du primaire à l’université.  
 Objectif : aider les familles à trouver facilement un professeur fiable et moderne pour leurs enfants.
@@ -7,7 +7,7 @@ Objectif : aider les familles à trouver facilement un professeur fiable et mode
 
 ## Démo
 
-👉 Site en ligne : https://edalia.vercel.app/
+👉 Site en ligne : https://Kademya.vercel.app/
 
 ---
 

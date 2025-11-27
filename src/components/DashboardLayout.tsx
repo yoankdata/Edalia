@@ -46,7 +46,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children, activePath 
       {/* Barre Latérale */}
       <div className="w-64 bg-gray-800 p-4 space-y-4 h-full flex-shrink-0 shadow-lg">
         <div className="text-2xl font-extrabold text-blue-400 mb-8 border-b border-gray-700 pb-4">
-          Edalia Prof
+          Kademya Prof
         </div>
         <nav className="space-y-2">
           {navItems.map((item) => (

@@ -149,34 +149,34 @@
    COMPONENT UTILITIES
    ================================================================ */
 @layer components {
-  /* Ombre Edalia standard (cards, images, blocs) */
+  /* Ombre Kademya standard (cards, images, blocs) */
   .shadow-subtle {
     box-shadow: var(--shadow-subtle);
   }
 
   /* Bloc de texte premium (About, pages éditoriales) */
-  .prose-edalia {
+  .prose-Kademya {
     @apply max-w-3xl mx-auto text-left space-y-4;
   }
 
-  .prose-edalia p {
+  .prose-Kademya p {
     @apply text-[16px] md:text-[18px] leading-relaxed md:leading-loose text-foreground/80;
   }
 
-  .prose-edalia h2 {
+  .prose-Kademya h2 {
     @apply font-headline text-2xl md:text-3xl font-semibold text-primary mt-6 mb-3;
   }
 
-  .prose-edalia h3 {
+  .prose-Kademya h3 {
     @apply font-headline text-xl md:text-2xl font-semibold text-foreground mt-4 mb-2;
   }
 
-  .prose-edalia ul,
-  .prose-edalia ol {
+  .prose-Kademya ul,
+  .prose-Kademya ol {
     @apply pl-5 space-y-1 text-foreground/80;
   }
 
-  .prose-edalia li::marker {
+  .prose-Kademya li::marker {
     color: hsl(var(--accent));
   }
 }

@@ -1,80 +1,93 @@
-'use client';
 
-import { useState } from 'react';
-import { useSupabaseClient } from '@supabase/auth-helpers-react';
-import { useRouter } from 'next/navigation';
-import { Loader2 } from 'lucide-react';
+
+import Link from 'next/link';
+import { Lock, Mail } from 'lucide-react';
+
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Logo } from '@/components/icons';
 
 export default function LoginPage() {
-  const supabase = useSupabaseClient();
-  const router = useRouter();
-
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [errorMsg, setErrorMsg] = useState('');
-
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setErrorMsg('');
-
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-
-    if (error) {
-      setErrorMsg('Identifiants incorrects.');
-      setLoading(false);
-      return;
-    }
-
-    router.push('/teachers/dashboard');
-  };
-
   return (
-    <div className="flex justify-center items-center min-h-screen bg-background px-4">
-      <div className="bg-white shadow-xl rounded-lg p-6 w-full max-w-md border">
-        <h1 className="text-2xl font-bold text-center mb-6">Connexion Professeur</h1>
+    <div className="min-h-screen flex items-center justify-center bg-muted/40 px-4 py-10">
+      <div className="w-full max-w-md space-y-8">
 
-        {errorMsg && (
-          <p className="text-red-600 text-sm mb-4 text-center">{errorMsg}</p>
-        )}
-
-        <form onSubmit={handleLogin} className="space-y-4">
+        {/* En-tête visuel */}
+        <div className="flex flex-col items-center gap-3 text-center">
+          <Logo />
           <div>
-            <label className="block text-sm font-medium mb-1">Email</label>
-            <input
-              type="email"
-              className="w-full border rounded-lg p-2"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@example.com"
-            />
+            <h1 className="text-2xl md:text-3xl font-headline font-bold text-foreground">
+              Portail enseignant
+            </h1>
+            <p className="text-sm text-muted-foreground mt-1">
+              Connectez-vous pour gérer votre profil, vos informations et votre abonnement Kademya.
+            </p>
           </div>
+        </div>
 
-          <div>
-            <label className="block text-sm font-medium mb-1">Mot de passe</label>
-            <input
-              type="password"
-              className="w-full border rounded-lg p-2"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="********"
-            />
-          </div>
+        {/* Carte de connexion */}
+        <Card className="shadow-lg border border-border/70">
+          <CardHeader>
+            <CardTitle className="text-lg font-semibold">
+              Connexion
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <form className="space-y-5">
+              {/* Email */}
+              <div className="space-y-2">
+                <Label htmlFor="email" className="flex items-center gap-2">
+                  <Mail className="h-4 w-4 text-primary" />
+                  Adresse e-mail
+                </Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="vous@example.com"
+                  autoComplete="email"
+                />
+              </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-primary text-white py-2 rounded-lg font-semibold hover:bg-primary/90 flex justify-center"
-          >
-            {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Se connecter'}
-          </button>
-        </form>
+              {/* Mot de passe */}
+              <div className="space-y-2">
+                <Label htmlFor="password" className="flex items-center gap-2">
+                  <Lock className="h-4 w-4 text-primary" />
+                  Mot de passe
+                </Label>
+                <Input
+                  id="password"
+                  type="password"
+                  autoComplete="current-password"
+                />
+              </div>
+
+              {/* Bouton principal */}
+              <Button type="submit" className="w-full mt-2">
+                <Lock className="h-4 w-4 mr-2" />
+                Se connecter
+              </Button>
+            </form>
+
+            {/* Lien vers inscription prof */}
+            <p className="mt-6 text-xs text-muted-foreground text-center">
+              Pas encore de compte enseignant ?{' '}
+              <Link
+                href="/become-a-teacher"
+                className="font-semibold text-primary hover:underline underline-offset-4"
+              >
+                Devenir prof sur Kademya
+              </Link>
+            </p>
+
+            {/* Note provisoire */}
+            <p className="mt-3 text-[11px] text-muted-foreground text-center">
+              Cette page est pour l’instant une maquette visuelle. L’authentification sera branchée
+              plus tard (Supabase / autre système).
+            </p>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
