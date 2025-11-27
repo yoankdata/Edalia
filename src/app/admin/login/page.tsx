@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
 import { useRouter } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
@@ -12,13 +12,18 @@ export default function LoginPage() {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
-  // Si déjà connecté → on envoie direct sur l'admin
+  // 🔥 Correction : redirection sécurisée dans un useEffect
+  useEffect(() => {
+    if (user) {
+      router.replace('/admin'); // replace évite de garder la page login dans l’historique
+    }
+  }, [user, router]);
+
+  // 🔥 Important : si user existe mais redirection pas encore faite → on affiche rien
   if (user) {
-    router.push('/admin');
     return null;
   }
 
@@ -38,7 +43,7 @@ export default function LoginPage() {
       return;
     }
 
-    // Après connexion, on redirige vers la page admin
+    // Redirection après login
     router.push('/admin');
   };
 
