@@ -14,7 +14,7 @@ export function Logo({ variant = 'header' }: LogoProps) {
         width: 1024,
         height: 1024,
         // >> GROS LOGO DANS LE FOOTER
-        className: 'h-28 md:h-32 w-auto',
+        className: 'h-16 md:h-32 w-auto',
       }
       : variant === 'app'
         ? {
