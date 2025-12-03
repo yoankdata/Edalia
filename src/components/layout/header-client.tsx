@@ -86,7 +86,7 @@ export function HeaderClient() {
 
             {/* FULL SCREEN MOBILE OVERLAY */}
             {mobileOpen && (
-                <div className="fixed inset-0 z-50 bg-background/95 backdrop-blur-sm md:hidden flex flex-col animate-in fade-in duration-200">
+                <div className="fixed inset-0 z-[100] bg-background md:hidden flex flex-col animate-in fade-in duration-200">
                     {/* HEADER INSIDE MENU */}
                     <div className="flex items-center justify-end p-6 h-20">
                         <Button

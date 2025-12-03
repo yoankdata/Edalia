@@ -24,7 +24,7 @@ export default function AboutPage() {
   return (
     <div className="bg-background overflow-hidden">
       {/* ======================== HERO SECTION ======================== */}
-      <section className="relative pt-20 pb-32 md:pt-32 md:pb-48 bg-gradient-to-b from-primary/5 to-background border-b border-border/40">
+      <section className="relative pt-28 pb-16 md:pt-32 md:pb-48 bg-gradient-to-b from-primary/5 to-background border-b border-border/40">
         {/*
           Bloc Pattern retiré ici pour un look plus épuré
           <div className="absolute inset-0 opacity-[0.15]">

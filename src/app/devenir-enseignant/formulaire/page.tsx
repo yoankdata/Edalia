@@ -27,5 +27,9 @@ export default async function Page({ searchParams }: PageProps) {
   const params = await searchParams;
   const submitted = params?.submitted === '1';
 
-  return <TeacherFormClient submitted={submitted} />;
+  return (
+    <div className="pt-header-offset">
+      <TeacherFormClient submitted={submitted} />
+    </div>
+  );
 }
