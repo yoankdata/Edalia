@@ -15,7 +15,7 @@ export function Header() {
             alt="Logo Kademya"
             width={180}
             height={60}
-            className="h-14 md:h-20 w-auto transition-all duration-300"
+            className="h-18 md:h-20 w-auto transition-all duration-300"
             priority
           />
         </Link>
