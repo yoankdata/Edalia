@@ -6,7 +6,7 @@ import { MapPin, Verified, Star, ShieldCheck, Clock, ArrowLeft } from 'lucide-re
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { ajouterAvisAction } from './actions';
-import WhatsAppButton from './WhatsAppButton';
+import ContactButton from '@/components/teachers/ContactButton';
 
 // ... Tes types restent les mêmes ...
 type ProfesseurRow = {
@@ -112,8 +112,9 @@ export default async function TeacherProfilePage({ params }: PageProps) {
                   </div>
                 </div>
 
-                <WhatsAppButton
+                <ContactButton
                   teacherId={prof.id}
+                  teacherName={prof.nom_complet}
                   phoneNumber={prof.numero_whatsapp}
                   className="w-full bg-[#25D366] hover:bg-[#128C7E] text-white font-bold text-base shadow-md h-12"
                 />
@@ -272,8 +273,9 @@ export default async function TeacherProfilePage({ params }: PageProps) {
           <span className="text-lg font-bold text-[#1A3626]">{formattedPrice} FCFA</span>
           <span className="text-xs text-gray-500">/ heure</span>
         </div>
-        <WhatsAppButton
+        <ContactButton
           teacherId={prof.id}
+          teacherName={prof.nom_complet}
           phoneNumber={prof.numero_whatsapp}
           className="bg-[#25D366] hover:bg-[#128C7E] text-white rounded-full px-6"
           label="WhatsApp"
