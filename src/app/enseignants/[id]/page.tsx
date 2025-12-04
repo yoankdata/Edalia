@@ -1,4 +1,5 @@
 import { supabase } from '@/lib/supabase';
+import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -39,7 +40,51 @@ type PageProps = {
   params: { id: string };
 };
 
+
+
 const PLACEHOLDER_PHOTO = '/images/teachers/placeholder-teacher.jpg';
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { id } = await params;
+
+  const { data: prof } = await supabase
+    .from('professeurs')
+    .select('nom_complet, matiere, niveau, photo_url, biographie')
+    .eq('id', id)
+    .single();
+
+  if (!prof) {
+    return {
+      title: 'Professeur introuvable | Kademya',
+    };
+  }
+
+  const ogUrl = new URL('https://www.kademya-ci.com/api/og');
+  ogUrl.searchParams.set('name', prof.nom_complet);
+  ogUrl.searchParams.set('subject', prof.matiere);
+  ogUrl.searchParams.set('level', prof.niveau);
+  if (prof.photo_url) {
+    ogUrl.searchParams.set('photo', prof.photo_url);
+  }
+
+  return {
+    title: `${prof.nom_complet} - Professeur de ${prof.matiere} | Kademya`,
+    description: prof.biographie?.slice(0, 160) || `Découvrez le profil de ${prof.nom_complet}, professeur de ${prof.matiere} chez Kademya.`,
+    openGraph: {
+      title: `${prof.nom_complet} - Professeur de ${prof.matiere}`,
+      description: `Réservez un cours avec ${prof.nom_complet}. ${prof.niveau} - ${prof.matiere}.`,
+      url: `https://www.kademya-ci.com/enseignants/${id}`,
+      images: [
+        {
+          url: ogUrl.toString(),
+          width: 1200,
+          height: 630,
+          alt: `Profil de ${prof.nom_complet}`,
+        },
+      ],
+    },
+  };
+}
 
 export default async function TeacherProfilePage({ params }: PageProps) {
   const { id } = await params;
@@ -66,8 +111,45 @@ export default async function TeacherProfilePage({ params }: PageProps) {
   const formattedPrice = prof.tarif_horaire.toLocaleString('fr-FR');
   const reviewsCount = prof.avis_nombre || 0;
 
+  // Construction du JSON-LD pour le SEO (Rich Snippets)
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: `Cours de ${prof.matiere} avec ${prof.nom_complet}`,
+    description: prof.biographie || `Professeur de ${prof.matiere} pour le niveau ${prof.niveau} à ${prof.commune}.`,
+    image: [photoUrl],
+    sku: prof.id,
+    brand: {
+      '@type': 'Brand',
+      name: 'Kademya'
+    },
+    offers: {
+      '@type': 'Offer',
+      price: prof.tarif_horaire,
+      priceCurrency: 'XOF',
+      availability: 'https://schema.org/InStock',
+      url: `https://www.kademya-ci.com/enseignants/${prof.id}`,
+      areaServed: {
+        '@type': 'City',
+        name: prof.commune
+      }
+    },
+    ...(prof.avis_moyenne && reviewsCount > 0 ? {
+      aggregateRating: {
+        '@type': 'AggregateRating',
+        ratingValue: prof.avis_moyenne,
+        reviewCount: reviewsCount
+      }
+    } : {})
+  };
+
   return (
     <div className="min-h-screen bg-gray-50/50 pb-20 md:pb-10 pt-header-offset">
+      {/* Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
 
       {/* 1. NAVBAR DE RETOUR (Simple et propre) */}
       <div className="bg-white border-b sticky top-0 z-30 md:relative md:z-0">

@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Poppins } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
@@ -20,9 +20,14 @@ const poppins = Poppins({
   subsets: ["latin"],
 });
 
+export const viewport: Viewport = {
+  themeColor: '#1A3626',
+};
+
 export const metadata: Metadata = {
   title: "Kademya",
   description: "Plateforme éducative",
+  manifest: '/manifest.webmanifest',
 };
 
 export default function RootLayout({
